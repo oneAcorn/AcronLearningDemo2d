@@ -1,5 +1,5 @@
 AntLine
-	一种指向性的虚线
+	一种指向性的虚线,LineRender.
 Step1
 	创建一个两边都是透明的图片AntLine.png
 	TextureType:Default,勾选Alpha is TransParency
@@ -15,3 +15,6 @@ Step3
 	Position中将index为1的x改为10(用于之后修改tiling,便于多个repeat),其他为0(适配2d)
 	在Material组件中修改tiling,根据需要多少组线段自行决定
 	在Material组件中修改offset,查看动态效果,之后会在代码中修改,用于实现动画
+Step4
+	可查看AntLineCtrl,直线的,点击左键
+	AntCurveCtrl,曲线的,按住左键绘制
