@@ -12,36 +12,47 @@ public class WaterDrop3 : MonoBehaviour, IPoolable
     [SerializeField] private LayerMask collisionLayers;
     private Rigidbody2D rb;
     private ObjectPool pool;
+    private float growthProgress;
+    private bool isGrowing = true;
+    private Vector3 spawnPosition;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    void Start()
+    private void Update()
     {
-        StartCoroutine(GrowDroplet());
+        if (isGrowing)
+        {
+            GrowDroplet();
+        }
     }
 
-
-    private IEnumerator GrowDroplet()
+    private void GrowDroplet()
     {
-        float time = 0;
-        transform.localScale = Vector3.zero;
-        Vector3 startPosition = transform.position;
-        while (time < growthDuration)
+        growthProgress += Time.deltaTime / growthDuration;
+
+        if (growthProgress >= 1f)
         {
-            transform.localScale = Vector3.one * Mathf.Lerp(0, 1, time / growthDuration);
-            // 位置修正：保持顶部Y轴不变
-            Vector3 newPos = startPosition;
-            newPos.y -= transform.localScale.y * 0.5f; // 向下偏移半个高度
-            transform.position = newPos;
-            time += Time.deltaTime;
-            yield return null;
+            // 生长完成
+            growthProgress = 1f;
+            isGrowing = false;
+            rb.isKinematic = false;
+            // rb.gravityScale = fallGravity;
         }
-        transform.localScale = Vector3.one;
-        //将BodyType修改为Dynamic
-        rb.isKinematic = false;
+
+        // 计算当前缩放
+        float currentScale = Mathf.Lerp(0, 1, growthProgress);
+        transform.localScale = new Vector3(currentScale, currentScale, 1f);
+
+        // 位置修正：保持顶部位置不变
+        float verticalOffset = currentScale * 0.5f; // 根据实际精灵高度调整
+        transform.position = new Vector3(
+            spawnPosition.x,
+            spawnPosition.y - verticalOffset,
+            spawnPosition.z
+        );
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -79,6 +90,12 @@ public class WaterDrop3 : MonoBehaviour, IPoolable
     public void OnGetFromPool()
     {
         ResetState();
+
+        spawnPosition = transform.position;
+        growthProgress = 0f;
+        isGrowing = true;
+        transform.localScale = Vector3.zero;
+
         GetComponent<Collider2D>().enabled = true;
     }
 

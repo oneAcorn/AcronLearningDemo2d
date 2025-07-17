@@ -791,7 +791,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 1694757590116734856, guid: 19f76fbe7d1ca8d41b0e34e019403c43, type: 3}
-  initialSize: 10
+  initialSize: 5
   expandable: 1
 --- !u!1 &1756247846
 GameObject:
